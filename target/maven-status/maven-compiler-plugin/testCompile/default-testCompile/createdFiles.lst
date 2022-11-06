@@ -1,0 +1,6 @@
+com/kabisa/vendingmachine/acceptance/repositories/UserServiceTest.class
+com/kabisa/vendingmachine/VendingMachineApplicationTests.class
+com/kabisa/vendingmachine/acceptance/controllers/UserControllerTest.class
+com/kabisa/vendingmachine/acceptance/controllers/QuoteControllerTest.class
+com/kabisa/vendingmachine/utils/DatabaseMock.class
+com/kabisa/vendingmachine/utils/AuthenticationMock.class
