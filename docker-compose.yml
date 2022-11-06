@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  app:
+    image: 'mvp-vending-machine:latest'
+    build:
+      context: .
+      target: release_img
+    container_name: app_mvp
+    depends_on:
+      - postgresqldb
+    ports:
+      - '8081:8080'
+    expose:
+      - 8080
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresqldb:5432/quotes_api_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    volumes:
+      - .:/app
+    command: java -jar mvp-vending-machine.jar
+
+  postgresqldb:
+    image: postgres:13.3
+    container_name: postgresqldb_mvp
+    ports:
+      - '5432:5432'
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=quotes_api_db
+
+  tests:
+    build:
+      context: .
+      target: release_img
+    depends_on:
+      - postgres_test
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_test:5432/quotes_test
+      - SPRING_DATASOURCE_USERNAME=test
+      - SPRING_DATASOURCE_PASSWORD=test
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
+    command: /app/mvnw test
+
+  postgres_test:
+    image: postgres:13.3
+    container_name: postgres_test
+    ports:
+      - '5432:5432'
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=quotes_test
+    volumes:
+      - ./db/docker:/docker-entrypoint-initdb.d/
